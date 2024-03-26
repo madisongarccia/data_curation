@@ -87,7 +87,7 @@ driver.quit()
 #separate into city and state
 
 #try getting hybrid or remote status
-def modality(location):
+def enviro(location):
     if "Hybrid" in location or "hybrid" in location:
         return 'Hybrid'
     elif "Remote" in location or "remote" in location:
@@ -100,23 +100,25 @@ def modality(location):
 
 cities = []
 states = []
-modalities = []
+enviros = []
 # Parse location data
 for location in company_locations:
     parts = location.split(', ')
     if len(parts) > 1:
-        job_modality = modality(location)
+        job_enviro = enviro(location)
         #remove modality keywords from locations
         city = parts[0].replace("Hybrid", "")
         city = city.replace("remote", '')
+        city = city.replace("Remote", '')
+        city = city.replace("Hybrid", '')
         city = city.replace('in', '')
         cities.append(city)
         states.append("CA")
-        modalities.append(job_modality)
+        enviros.append(job_enviro)
     else:
         cities.append(np.nan)
         states.append('CA')
-        modalities.append(np.nan)
+        enviros.append(np.nan)
 
 
 #make salaries integers
@@ -138,7 +140,7 @@ for salary in job_pays:
 job_info = pd.DataFrame({"Title": job_titles,
               "Company": company_names,
               "Location": company_locations,
-              'Modality': modalities,
+              'Work_Environment': enviros,
               "Job_Description": descriptions,
               "When_Posted": posted,
               "Pay": salaries,
@@ -160,6 +162,4 @@ def fix_location(value):
 job_info['Location'] = job_info["Location"].apply(fix_location)
 job_info['Rating'] = ratings
 job_info = job_info.drop(columns=['Location'])
-
-
-#job_info.to_csv("masterpiece_fixed_pay.csv")
+job_info.to_csv("3-26.csv")
